@@ -11,3 +11,6 @@
 
 *.lib
 *.exp
+/ipch/CVGAMECOREDLL.VS2013-7791c2c4
+/BuildTemp
+/BuildOutput/VS2013_ModWin32
