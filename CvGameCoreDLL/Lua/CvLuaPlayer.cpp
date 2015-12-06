@@ -404,6 +404,9 @@ void CvLuaPlayer::PushMethods(lua_State *L, int t)
 
 	Method(GetPower);
 	Method(GetMilitaryMight);
+	Method(GetMilitarySeaMight);
+	Method(GetMilitaryAirMight);
+	Method(GetMilitaryLandMight);
 	Method(GetPopScore);
 	Method(GetLandScore);
 	Method(GetWondersScore);
@@ -2969,6 +2972,24 @@ int CvLuaPlayer::lGetPower(lua_State* L)
 int CvLuaPlayer::lGetMilitaryMight(lua_State* L)
 {
 	return BasicLuaMethod(L, &CvPlayerAI::GetMilitaryMight);
+}
+//------------------------------------------------------------------------------
+//int GetMilitarySeaMight();
+int CvLuaPlayer::lGetMilitarySeaMight(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::GetMilitarySeaMight);
+}
+//------------------------------------------------------------------------------
+//int GetMilitaryAirMight();
+int CvLuaPlayer::lGetMilitaryAirMight(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::GetMilitaryAirMight);
+}
+//------------------------------------------------------------------------------
+//int GetMilitaryLandMight();
+int CvLuaPlayer::lGetMilitaryLandMight(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::GetMilitaryLandMight);
 }
 //------------------------------------------------------------------------------
 //int getPopScore();

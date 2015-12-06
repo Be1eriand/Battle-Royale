@@ -900,8 +900,11 @@ public:
 
 	int getPower() const;
 	int GetMilitaryMight() const;
+	int GetMilitarySeaMight() const;
+	int GetMilitaryAirMight() const;
+	int GetMilitaryLandMight() const;
 	int GetEconomicMight() const;
-	int calculateMilitaryMight() const;
+	int calculateMilitaryMight(DomainTypes Domain) const;
 	int calculateEconomicMight() const;
 	int calculateProductionMight() const;
 
@@ -1721,6 +1724,9 @@ protected:
 	FAutoVariable<int, CvPlayer> m_iCapitalCityID;
 	FAutoVariable<int, CvPlayer> m_iCitiesLost;
 	FAutoVariable<int, CvPlayer> m_iMilitaryMight;
+	FAutoVariable<int, CvPlayer> m_iMilitarySeaMight;
+	FAutoVariable<int, CvPlayer> m_iMilitaryAirMight;
+	FAutoVariable<int, CvPlayer> m_iMilitaryLandMight;
 	FAutoVariable<int, CvPlayer> m_iEconomicMight;
 	FAutoVariable<int, CvPlayer> m_iTurnMightRecomputed;
 	FAutoVariable<int, CvPlayer> m_iNewCityExtraPopulation;

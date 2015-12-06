@@ -436,6 +436,9 @@ protected:
 
 	static int lGetPower(lua_State* L);
 	static int lGetMilitaryMight(lua_State* L);
+	static int lGetMilitarySeaMight(lua_State* L);
+	static int lGetMilitaryAirMight(lua_State* L);
+	static int lGetMilitaryLandMight(lua_State* L);
 	static int lGetPopScore(lua_State* L);
 	static int lGetLandScore(lua_State* L);
 	static int lGetWondersScore(lua_State* L);
