@@ -378,6 +378,9 @@ void CvLuaPlayer::PushMethods(lua_State *L, int t)
 	Method(GetGoldPerMilitaryUnit);
 	Method(GetExtraUnitCost);
 	Method(GetNumMilitaryUnits);
+	Method(GetNumMilitarySeaUnits);
+	Method(GetNumMilitaryAirUnits);
+	Method(GetNumMilitaryLandUnits);
 	Method(GetHappyPerMilitaryUnit);
 	Method(IsMilitaryFoodProduction);
 	Method(GetHighestUnitLevel);
@@ -2839,6 +2842,24 @@ int CvLuaPlayer::lGetExtraUnitCost(lua_State* L)
 int CvLuaPlayer::lGetNumMilitaryUnits(lua_State* L)
 {
 	return BasicLuaMethod(L, &CvPlayerAI::getNumMilitaryUnits);
+}
+//------------------------------------------------------------------------------
+//int getNumMilitarySeaUnits();
+int CvLuaPlayer::lGetNumMilitarySeaUnits(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::getNumMilitarySeaUnits);
+}
+//------------------------------------------------------------------------------
+//int getNumMilitaryAirUnits();
+int CvLuaPlayer::lGetNumMilitaryAirUnits(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::getNumMilitaryAirUnits);
+}
+//------------------------------------------------------------------------------
+//int getNumMilitaryLandUnits();
+int CvLuaPlayer::lGetNumMilitaryLandUnits(lua_State* L)
+{
+	return BasicLuaMethod(L, &CvPlayerAI::getNumMilitaryLandUnits);
 }
 //------------------------------------------------------------------------------
 //int getHappyPerMilitaryUnit();

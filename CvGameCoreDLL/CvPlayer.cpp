@@ -217,7 +217,10 @@ m_syncArchive(*this)
 , m_iUnitGoldMaintenanceMod("CvPlayer::m_iUnitGoldMaintenanceMod", m_syncArchive)
 , m_iUnitSupplyMod("CvPlayer::m_iUnitSupplyMod", m_syncArchive)
 , m_iExtraUnitCost("CvPlayer::m_iExtraUnitCost", m_syncArchive)
-, m_iNumMilitaryUnits("CvPlayer::m_iNumMilitaryUnits", m_syncArchive)
+, m_iNumMilitaryUnits("CvPlayer::m_iNumMilitaryUnits", m_syncArchive) 
+, m_iNumMilitarySeaUnits("CvPlayer::m_iNumMilitarySeaUnits", m_syncArchive)  //
+, m_iNumMilitaryAirUnits("CvPlayer::m_iNumMilitaryAirUnits", m_syncArchive)  //
+, m_iNumMilitaryLandUnits("CvPlayer::m_iNumMilitaryLandUnits", m_syncArchive)  //
 , m_iHappyPerMilitaryUnit("CvPlayer::m_iHappyPerMilitaryUnit", m_syncArchive)
 , m_iHappinessToCulture("CvPlayer::m_iHappinessToCulture", m_syncArchive)
 , m_iHappinessToScience("CvPlayer::m_iHappinessToScience", m_syncArchive)
@@ -744,6 +747,9 @@ void CvPlayer::uninit()
 	m_iUnitSupplyMod = 0;
 	m_iExtraUnitCost = 0;
 	m_iNumMilitaryUnits = 0;
+	m_iNumMilitarySeaUnits = 0;
+	m_iNumMilitaryAirUnits = 0;
+	m_iNumMilitaryLandUnits = 0;
 	m_iHappyPerMilitaryUnit = 0;
 	m_iHappinessToCulture = 0;
 	m_iHappinessToScience = 0;
@@ -10763,14 +10769,53 @@ int CvPlayer::getNumMilitaryUnits() const
 	return m_iNumMilitaryUnits;
 }
 
+//  ----------------------------------------------------------------------------------
+int CvPlayer::getNumMilitarySeaUnits() const
+{
+	return m_iNumMilitarySeaUnits;
+}
+
+int CvPlayer::getNumMilitaryAirUnits() const
+{
+	return m_iNumMilitaryAirUnits;
+}
+
+int CvPlayer::getNumMilitaryLandUnits() const
+{
+	return m_iNumMilitaryLandUnits;
+}
 
 //	--------------------------------------------------------------------------------
-void CvPlayer::changeNumMilitaryUnits(int iChange)
+void CvPlayer::changeNumMilitaryUnits(int iChange, DomainTypes Domain)
 {
 	if (iChange != 0)
 	{
 		m_iNumMilitaryUnits = (m_iNumMilitaryUnits + iChange);
 		CvAssert(getNumMilitaryUnits() >= 0);
+
+		switch (Domain)
+		{
+		case NO_DOMAIN:
+			break;
+		case DOMAIN_SEA:
+			m_iNumMilitarySeaUnits = (m_iNumMilitarySeaUnits + iChange);
+			CvAssert(getNumMilitarySeaUnits() >= 0);
+			break;
+		case DOMAIN_AIR:
+			m_iNumMilitaryAirUnits = (m_iNumMilitaryAirUnits + iChange);
+			CvAssert(getNumMilitaryAirUnits() >= 0);
+			break;
+		case DOMAIN_LAND:
+			m_iNumMilitaryLandUnits = (m_iNumMilitaryLandUnits + iChange);
+			CvAssert(getNumMilitarySeaUnits() >= 0);
+			break;
+		case DOMAIN_IMMOBILE:
+			break;
+		case DOMAIN_HOVER:
+			break;
+		default:
+			break;
+		}
 
 		if (GetID() == GC.getGame().getActivePlayer())
 		{
@@ -17599,6 +17644,9 @@ void CvPlayer::Read(FDataStream& kStream)
 	kStream >> m_iUnitSupplyMod;
 	kStream >> m_iExtraUnitCost;
 	kStream >> m_iNumMilitaryUnits;
+	kStream >> m_iNumMilitarySeaUnits;
+	kStream >> m_iNumMilitaryAirUnits;
+	kStream >> m_iNumMilitaryLandUnits;
 	kStream >> m_iHappyPerMilitaryUnit;
 	kStream >> m_iHappinessToCulture;
 	kStream >> m_iHappinessToScience;
@@ -18258,6 +18306,9 @@ void CvPlayer::Write(FDataStream& kStream) const
 	kStream << m_iUnitSupplyMod;
 	kStream << m_iExtraUnitCost;
 	kStream << m_iNumMilitaryUnits;
+	kStream << m_iNumMilitarySeaUnits;
+	kStream << m_iNumMilitaryAirUnits;
+	kStream << m_iNumMilitaryLandUnits;
 	kStream << m_iHappyPerMilitaryUnit;
 	kStream << m_iHappinessToCulture;
 	kStream << m_iHappinessToScience;

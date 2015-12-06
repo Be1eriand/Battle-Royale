@@ -702,7 +702,11 @@ public:
 	int GetNumMaintenanceFreeUnits(DomainTypes eDomain = NO_DOMAIN, bool bOnlyCombatUnits = false) const;
 
 	int getNumMilitaryUnits() const;
-	void changeNumMilitaryUnits(int iChange);
+	/*Changes to allow finer details of the Military Units that the Player has*/
+	int getNumMilitaryLandUnits() const;
+	int getNumMilitarySeaUnits() const;
+	int getNumMilitaryAirUnits() const;
+	void changeNumMilitaryUnits(int iChange, DomainTypes Domain);
 
 	int getHappyPerMilitaryUnit() const;
 	void changeHappyPerMilitaryUnit(int iChange);
@@ -1549,6 +1553,9 @@ protected:
 	FAutoVariable<int, CvPlayer> m_iUnitSupplyMod;
 	FAutoVariable<int, CvPlayer> m_iExtraUnitCost;
 	FAutoVariable<int, CvPlayer> m_iNumMilitaryUnits;
+	FAutoVariable<int, CvPlayer> m_iNumMilitarySeaUnits;
+	FAutoVariable<int, CvPlayer> m_iNumMilitaryAirUnits;
+	FAutoVariable<int, CvPlayer> m_iNumMilitaryLandUnits;
 	FAutoVariable<int, CvPlayer> m_iHappyPerMilitaryUnit;
 	FAutoVariable<int, CvPlayer> m_iHappinessToCulture;
 	FAutoVariable<int, CvPlayer> m_iHappinessToScience;

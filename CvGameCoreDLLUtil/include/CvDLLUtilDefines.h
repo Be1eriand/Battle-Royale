@@ -22,8 +22,8 @@
 #define MAX_CIV_PLAYERS										(63)
 #define MAX_CIV_TEAMS										(MAX_CIV_PLAYERS)
 
-#define MAX_MAJOR_CIVS										(63)
-#define MAX_MINOR_CIVS										(MAX_CIV_PLAYERS - MAX_MAJOR_CIVS + 1) //This is a hack to avoid MAX_MINOR_CIVS being equal to 0 and allowing it to compile
+#define MAX_MAJOR_CIVS										(62)
+#define MAX_MINOR_CIVS										(MAX_CIV_PLAYERS - MAX_MAJOR_CIVS) //Avoid MAX_MINOR_CIVS being equal to 0 and allows it to compile
 
 #define MAX_PLAYERS											(MAX_CIV_PLAYERS + 1)
 #define MAX_TEAMS											(MAX_PLAYERS)

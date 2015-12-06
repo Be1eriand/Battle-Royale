@@ -370,6 +370,9 @@ protected:
 	static int lGetGoldPerMilitaryUnit(lua_State* L);
 	static int lGetExtraUnitCost(lua_State* L);
 	static int lGetNumMilitaryUnits(lua_State* L);
+	static int lGetNumMilitarySeaUnits(lua_State* L); // Sea Units
+	static int lGetNumMilitaryAirUnits(lua_State* L); // Air Units
+	static int lGetNumMilitaryLandUnits(lua_State* L); // Land Units
 	static int lGetHappyPerMilitaryUnit(lua_State* L);
 	static int lIsMilitaryFoodProduction(lua_State* L);
 	static int lGetHighestUnitLevel(lua_State* L);
