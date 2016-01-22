@@ -243,6 +243,9 @@ CvPlayer::CvPlayer() :
 	, m_iUnitSupplyMod("CvPlayer::m_iUnitSupplyMod", m_syncArchive)
 	, m_iExtraUnitCost("CvPlayer::m_iExtraUnitCost", m_syncArchive)
 	, m_iNumMilitaryUnits("CvPlayer::m_iNumMilitaryUnits", m_syncArchive)
+	, m_iNumMilitarySeaUnits("CvPlayer::m_iNumMilitarySeaUnits", m_syncArchive)
+	, m_iNumMilitaryAirUnits("CvPlayer::m_iNumMilitaryAirUnits", m_syncArchive)
+	, m_iNumMilitaryLandUnits("CvPlayer::m_iNumMilitaryLandUnits", m_syncArchive)
 	, m_iHappyPerMilitaryUnit("CvPlayer::m_iHappyPerMilitaryUnit", m_syncArchive)
 	, m_iHappinessToCulture("CvPlayer::m_iHappinessToCulture", m_syncArchive)
 	, m_iHappinessToScience("CvPlayer::m_iHappinessToScience", m_syncArchive)
@@ -273,6 +276,9 @@ CvPlayer::CvPlayer() :
 	, m_iCapitalCityID("CvPlayer::m_iCapitalCityID", m_syncArchive)
 	, m_iCitiesLost("CvPlayer::m_iCitiesLost", m_syncArchive)
 	, m_iMilitaryMight("CvPlayer::m_iMilitaryMight", m_syncArchive)
+	, m_iMilitarySeaMight("CvPlayer::m_iMilitarySeaMight", m_syncArchive)
+	, m_iMilitaryAirMight("CvPlayer::m_iMilitaryAirMight", m_syncArchive)
+	, m_iMilitaryLandMight("CvPlayer::m_iMilitaryLandMight", m_syncArchive)
 	, m_iEconomicMight("CvPlayer::m_iEconomicMight", m_syncArchive)
 	, m_iTurnMightRecomputed("CvPlayer::m_iTurnMightRecomputed", m_syncArchive)
 	, m_iNewCityExtraPopulation("CvPlayer::m_iNewCityExtraPopulation", m_syncArchive)
@@ -855,6 +861,9 @@ void CvPlayer::uninit()
 	m_iUnitSupplyMod = 0;
 	m_iExtraUnitCost = 0;
 	m_iNumMilitaryUnits = 0;
+	m_iNumMilitarySeaUnits = 0;
+	m_iNumMilitaryAirUnits = 0;
+	m_iNumMilitaryLandUnits = 0;
 	m_iHappyPerMilitaryUnit = 0;
 	m_iHappinessToCulture = 0;
 	m_iHappinessToScience = 0;
@@ -884,6 +893,9 @@ void CvPlayer::uninit()
 	m_iCapitalCityID = FFreeList::INVALID_INDEX;
 	m_iCitiesLost = 0;
 	m_iMilitaryMight = 0;
+	m_iMilitarySeaMight = 0;
+	m_iMilitaryAirMight = 0;
+	m_iMilitaryLandMight = 0;
 	m_iEconomicMight = 0;
 	m_iTurnMightRecomputed = -1;
 	m_iNewCityExtraPopulation = 0;
@@ -13932,15 +13944,55 @@ int CvPlayer::getNumMilitaryUnits() const
 }
 
 
-//	--------------------------------------------------------------------------------
-void CvPlayer::changeNumMilitaryUnits(int iChange)
+//  ----------------------------------------------------------------------------------
+int CvPlayer::getNumMilitarySeaUnits() const
 {
-	if(iChange != 0)
+	return m_iNumMilitarySeaUnits;
+}
+
+int CvPlayer::getNumMilitaryAirUnits() const
+{
+	return m_iNumMilitaryAirUnits;
+}
+
+int CvPlayer::getNumMilitaryLandUnits() const
+{
+	return m_iNumMilitaryLandUnits;
+}
+
+//	--------------------------------------------------------------------------------
+void CvPlayer::changeNumMilitaryUnits(int iChange, DomainTypes Domain)
+{
+	if (iChange != 0)
 	{
 		m_iNumMilitaryUnits = (m_iNumMilitaryUnits + iChange);
 		CvAssert(getNumMilitaryUnits() >= 0);
 
-		if(GetID() == GC.getGame().getActivePlayer())
+		switch (Domain)
+		{
+		case NO_DOMAIN:
+			break;
+		case DOMAIN_SEA:
+			m_iNumMilitarySeaUnits = (m_iNumMilitarySeaUnits + iChange);
+			CvAssert(getNumMilitarySeaUnits() >= 0);
+			break;
+		case DOMAIN_AIR:
+			m_iNumMilitaryAirUnits = (m_iNumMilitaryAirUnits + iChange);
+			CvAssert(getNumMilitaryAirUnits() >= 0);
+			break;
+		case DOMAIN_LAND:
+			m_iNumMilitaryLandUnits = (m_iNumMilitaryLandUnits + iChange);
+			CvAssert(getNumMilitarySeaUnits() >= 0);
+			break;
+		case DOMAIN_IMMOBILE:
+			break;
+		case DOMAIN_HOVER:
+			break;
+		default:
+			break;
+		}
+
+		if (GetID() == GC.getGame().getActivePlayer())
 		{
 			GC.GetEngineUserInterface()->setDirty(GameData_DIRTY_BIT, true);
 		}
@@ -15160,9 +15212,12 @@ int CvPlayer::getPower() const
 {
 	if(m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
 	{
-		// more lazy evaluation
+		// more lazy evaluation // is there a better way of doing this efficiently
 		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
-		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN); 
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
 		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
 	}
 	return m_iMilitaryMight + m_iEconomicMight;
@@ -15175,10 +15230,58 @@ int CvPlayer::GetMilitaryMight() const
 	{
 		// more lazy evaluation
 		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
-		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN);
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
 		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
 	}
 	return m_iMilitaryMight;
+}
+//	--------------------------------------------------------------------------------
+int CvPlayer::GetMilitarySeaMight() const
+{
+	if (m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
+	{
+		// more lazy evaluation
+		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN);
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
+		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
+	}
+	return m_iMilitarySeaMight;
+}
+//	--------------------------------------------------------------------------------
+int CvPlayer::GetMilitaryAirMight() const
+{
+	if (m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
+	{
+		// more lazy evaluation
+		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN);
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
+		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
+	}
+	return m_iMilitaryAirMight;
+}
+//	--------------------------------------------------------------------------------
+int CvPlayer::GetMilitaryLandMight() const
+{
+	if (m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
+	{
+		// more lazy evaluation
+		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN);
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
+		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
+	}
+	return m_iMilitaryLandMight;
 }
 
 //	--------------------------------------------------------------------------------
@@ -15188,14 +15291,17 @@ int CvPlayer::GetEconomicMight() const
 	{
 		// more lazy evaluation
 		const_cast<CvPlayer*>(this)->m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
-		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight();
+		const_cast<CvPlayer*>(this)->m_iMilitaryMight = calculateMilitaryMight(NO_DOMAIN);
+		const_cast<CvPlayer*>(this)->m_iMilitarySeaMight = calculateMilitaryMight(DOMAIN_SEA);
+		const_cast<CvPlayer*>(this)->m_iMilitaryAirMight = calculateMilitaryMight(DOMAIN_AIR);
+		const_cast<CvPlayer*>(this)->m_iMilitaryLandMight = calculateMilitaryMight(DOMAIN_LAND);
 		const_cast<CvPlayer*>(this)->m_iEconomicMight = calculateEconomicMight();
 	}
 	return m_iEconomicMight;
 }
 
 //	--------------------------------------------------------------------------------
-int CvPlayer::calculateMilitaryMight() const
+int CvPlayer::calculateMilitaryMight(DomainTypes Domain) const
 {
 	int rtnValue = 0;
 	const CvUnit* pLoopUnit;
@@ -15209,7 +15315,15 @@ int CvPlayer::calculateMilitaryMight() const
 		{
 			iPower /= 2;
 		}
-		rtnValue += iPower;
+
+		if (Domain == NO_DOMAIN)
+		{
+			rtnValue += iPower;
+		} 
+		else if (pLoopUnit->getDomainType() == Domain)
+		{
+			rtnValue += iPower;
+		}
 	}
 
 	//Simplistic increase based on player's gold
@@ -21902,6 +22016,9 @@ void CvPlayer::Read(FDataStream& kStream)
 	kStream >> m_iUnitSupplyMod;
 	kStream >> m_iExtraUnitCost;
 	kStream >> m_iNumMilitaryUnits;
+	kStream >> m_iNumMilitarySeaUnits;
+	kStream >> m_iNumMilitaryAirUnits;
+	kStream >> m_iNumMilitaryLandUnits;
 	kStream >> m_iHappyPerMilitaryUnit;
 	kStream >> m_iHappinessToCulture;
 	kStream >> m_iHappinessToScience;
@@ -21951,6 +22068,9 @@ void CvPlayer::Read(FDataStream& kStream)
 	kStream >> m_iCapitalCityID;
 	kStream >> m_iCitiesLost;
 	kStream >> m_iMilitaryMight;
+	kStream >> m_iMilitarySeaMight;
+	kStream >> m_iMilitaryAirMight;
+	kStream >> m_iMilitaryLandMight;
 	kStream >> m_iEconomicMight;
 	kStream >> m_iTurnMightRecomputed;
 	kStream >> m_iNewCityExtraPopulation;
@@ -22420,6 +22540,9 @@ void CvPlayer::Write(FDataStream& kStream) const
 	kStream << m_iUnitSupplyMod;
 	kStream << m_iExtraUnitCost;
 	kStream << m_iNumMilitaryUnits;
+	kStream << m_iNumMilitarySeaUnits;
+	kStream << m_iNumMilitaryAirUnits;
+	kStream << m_iNumMilitaryLandUnits;
 	kStream << m_iHappyPerMilitaryUnit;
 	kStream << m_iHappinessToCulture;
 	kStream << m_iHappinessToScience;
@@ -22448,6 +22571,9 @@ void CvPlayer::Write(FDataStream& kStream) const
 	kStream << m_iCapitalCityID;
 	kStream << m_iCitiesLost;
 	kStream << m_iMilitaryMight;
+	kStream << m_iMilitarySeaMight;
+	kStream << m_iMilitaryAirMight;
+	kStream << m_iMilitaryLandMight;
 	kStream << m_iEconomicMight;
 	kStream << m_iTurnMightRecomputed;
 	kStream << m_iNewCityExtraPopulation;

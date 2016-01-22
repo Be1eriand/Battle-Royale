@@ -410,6 +410,9 @@ protected:
 	static int lGetGoldPerMilitaryUnit(lua_State* L);
 	static int lGetExtraUnitCost(lua_State* L);
 	static int lGetNumMilitaryUnits(lua_State* L);
+	static int lGetNumMilitarySeaUnits(lua_State* L); // Sea Units
+	static int lGetNumMilitaryAirUnits(lua_State* L); // Air Units
+	static int lGetNumMilitaryLandUnits(lua_State* L); // Land Units
 	static int lGetHappyPerMilitaryUnit(lua_State* L);
 	static int lIsMilitaryFoodProduction(lua_State* L);
 	static int lGetHighestUnitLevel(lua_State* L);
@@ -433,6 +436,9 @@ protected:
 
 	static int lGetPower(lua_State* L);
 	static int lGetMilitaryMight(lua_State* L);
+	static int lGetMilitarySeaMight(lua_State* L);
+	static int lGetMilitaryAirMight(lua_State* L);
+	static int lGetMilitaryLandMight(lua_State* L);
 	static int lGetPopScore(lua_State* L);
 	static int lGetLandScore(lua_State* L);
 	static int lGetWondersScore(lua_State* L);

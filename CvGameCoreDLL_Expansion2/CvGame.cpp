@@ -632,7 +632,7 @@ void CvGame::InitPlayers()
 	for(iI = 0; iI < MAX_PLAYERS; iI++)
 	{
 		// init Barbarian slot
-		if(iI == BARBARIAN_PLAYER)
+		if(iI == BARBARIAN_PLAYER) //If this is removed, will need a Mod to ensure that Barbarians are not allowed.
 		{
 			CvPreGame::setTeamType(BARBARIAN_PLAYER, BARBARIAN_TEAM);
 			CvPreGame::setSlotStatus(BARBARIAN_PLAYER, SS_COMPUTER);

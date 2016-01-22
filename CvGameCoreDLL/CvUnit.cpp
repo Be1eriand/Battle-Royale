@@ -411,7 +411,8 @@ void CvUnit::init(int iID, UnitTypes eUnit, UnitAITypes eUnitAI, PlayerTypes eOw
 
 	if (getUnitInfo().IsMilitarySupport())
 	{
-		GET_PLAYER(getOwner()).changeNumMilitaryUnits(1);
+		DomainTypes Domain = (DomainTypes)getUnitInfo().GetDomainType();
+		GET_PLAYER(getOwner()).changeNumMilitaryUnits(1, Domain);
 	}
 
 	// Free Promotions from Unit XML
@@ -1239,7 +1240,8 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer /*= NO_PLAYER*/)
 
 	if (getUnitInfo().IsMilitarySupport())
 	{
-		GET_PLAYER(getOwner()).changeNumMilitaryUnits(-1);
+		DomainTypes Domain = (DomainTypes) getUnitInfo().GetDomainType();
+		GET_PLAYER(getOwner()).changeNumMilitaryUnits(-1, Domain);
 	}
 
 	// A unit dying reduces the Great General meter
