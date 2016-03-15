@@ -7,9 +7,6 @@ It is compatible with YnAEMP
 
 The dll has:
 
-
-a custom logger that is accessed through the Lua framework of the game
-
 Extended Lua Suppot for finer resolution of Player Information:
 Added support for Number of Land, Air & Sea Units
 Added support for Military power of Land, Air & Sea Units
