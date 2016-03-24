@@ -342,6 +342,10 @@ protected:
 	static int lGetTurnsUntilMinorCivElection(lua_State* L);
 
 	static int lIsProcessingMessages(lua_State* L);
+
+	// Lua CSV Logging Functions
+	static int lDeleteCSV(lua_State* L);
+	static int lWriteCSV(lua_State* L);
 };
 
 #endif //CVLUAGAME_H
