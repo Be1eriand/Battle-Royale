@@ -26,6 +26,8 @@
 #include "../CvGameTextMgr.h"
 #include "../CvReplayMessage.h"
 
+#include "../CvLoggerCSV.h"
+
 #define Method(func) RegisterMethod(L, l##func, #func);
 
 //------------------------------------------------------------------------------
@@ -347,7 +349,10 @@ void CvLuaGame::RegisterMembers(lua_State* L)
 	Method(GetTurnsBetweenMinorCivElections);
 	Method(GetTurnsUntilMinorCivElection);
 
-	Method(IsProcessingMessages)
+	Method(IsProcessingMessages);
+
+	Method(DeleteCSV);
+	Method(WriteCSV);
 }
 //------------------------------------------------------------------------------
 
@@ -2401,5 +2406,24 @@ int CvLuaGame::lGetTurnsUntilMinorCivElection(lua_State* L)
 int CvLuaGame::lIsProcessingMessages(lua_State* L)
 {
 	lua_pushboolean(L, gDLL->IsProcessingGameCoreMessages());
+	return 1;
+}
+
+int CvLuaGame::lDeleteCSV(lua_State * L)
+{
+	const char* szCSVFilename = lua_tostring(L, 2);
+
+	CvLoggerCSV::DeleteCSV(szCSVFilename);
+
+	return 1;
+}
+
+int CvLuaGame::lWriteCSV(lua_State * L)
+{
+	const char* szCSVFilename = lua_tostring(L, 2);
+	const char* szCSVLine = lua_tostring(L, 3);
+
+	CvLoggerCSV::WriteCSVLog(szCSVFilename, szCSVLine);
+
 	return 1;
 }

@@ -27,6 +27,8 @@
 #include "../CvGameTextMgr.h"
 #include "../CvReplayMessage.h"
 
+#include "../CvLoggerCSV.h"
+
 #define Method(func) RegisterMethod(L, l##func, #func);
 
 //------------------------------------------------------------------------------
@@ -379,6 +381,9 @@ void CvLuaGame::RegisterMembers(lua_State* L)
 
 	Method(GetNumArchaeologySites);
 	Method(GetNumHiddenArchaeologySites);
+
+	Method(DeleteCSV);
+	Method(WriteCSV);
 }
 //------------------------------------------------------------------------------
 
@@ -2782,5 +2787,24 @@ int CvLuaGame::lGetNumArchaeologySites(lua_State* L)
 int CvLuaGame::lGetNumHiddenArchaeologySites(lua_State* L)
 {
 	lua_pushinteger(L, GC.getGame().GetNumHiddenArchaeologySites());
+	return 1;
+}
+
+int CvLuaGame::lDeleteCSV(lua_State * L)
+{
+	const char* szCSVFilename = lua_tostring(L, 2);
+
+	CvLoggerCSV::DeleteCSV(szCSVFilename);
+
+	return 1;
+}
+
+int CvLuaGame::lWriteCSV(lua_State * L)
+{
+	const char* szCSVFilename = lua_tostring(L, 2);
+	const char* szCSVLine = lua_tostring(L, 3);
+
+	CvLoggerCSV::WriteCSVLog(szCSVFilename, szCSVLine);
+
 	return 1;
 }
