@@ -3223,7 +3223,7 @@ int CvLeague::GetCoreVotesForMember(PlayerTypes ePlayer)
 int CvLeague::CalculateStartingVotesForMember(PlayerTypes ePlayer, bool bForceUpdateSources)
 {
 	int iVotes = 0;
-	if (CanEverVote(ePlayer))
+	if (CanEverVote(ePlayer) && !GET_PLAYER(ePlayer).isHuman())
 	{
 		LeagueSpecialSessionTypes eGoverningSpecialSession = NO_LEAGUE_SPECIAL_SESSION;
 		if (GetCurrentSpecialSession() != NO_LEAGUE_SPECIAL_SESSION)
@@ -3355,6 +3355,7 @@ int CvLeague::CalculateStartingVotesForMember(PlayerTypes ePlayer, bool bForceUp
 			}
 		}
 	}
+
 	return iVotes;
 }
 
